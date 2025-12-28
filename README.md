@@ -114,7 +114,7 @@ interface IProduct {
 2. Покупатель
 ```
 interface IBuyer {
-  payment: TPayment; // - способ оплаты (онлайн | при получении)
+  payment: 'online' | 'cash'; // - способ оплаты (онлайн | при получении)
   email: string; // - email покупателя
   phone: string; // - номер телефона покупателя
   address: string; // - адрес покупателя
@@ -173,13 +173,13 @@ constructor() {
 ```
 
 Поля класса:
-`payment: TPayment;` - способ оплаты (онлайн | при получении)
+`payment: 'online' | 'cash';` - способ оплаты (онлайн | при получении)
 `email: string;` - email покупателя
 `phone: string;` - номер телефона покупателя
 `address: string;` - адрес покупателя
 
 Методы класса:
-`setPayment(payment: TPayment): void` - сохранение выбранного способа оплаты;
+`setPayment(payment: 'online' | 'cash'): void` - сохранение выбранного способа оплаты;
 `setEmail(email: string): void`- сохранение email пользователя;
 `setPhone(phone: string): void` - сохранение номера телефона пользователя;
 `setAddress(address: string): void` - сохранение адреса пользователя;
@@ -194,4 +194,4 @@ interface ErrorsBuyer {
   address?: 'Укажите адрес'
 }
 ```
-`validateBuyerInfo(payment: TPayment, email: string, phone: string, address: string): ErrorsBuyer | null` - валидация данных.
+`validateBuyerInfo(payment: 'online' | 'cash', email: string, phone: string, address: string): ErrorsBuyer | null` - валидация данных.
