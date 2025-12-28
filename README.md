@@ -165,10 +165,10 @@ interface IBuyer {
 Конструктор:  
 ```
 constructor() {
-  this.payment: '';
-  this.email: '';
-  this.phone: '';
-  this.address: '';
+  this.payment = '';
+  this.email = '';
+  this.phone = '';
+  this.address = '';
 }
 ```
 
