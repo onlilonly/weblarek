@@ -21,7 +21,9 @@ export class Basket {
     deleteProductsToBuy(product: IProduct): void {
         let isItemInBasket = this.getProductsToBuyById(product.id);
         if (isItemInBasket) {
-            this.productsToBuy.filter((item) => item !== product);
+            this.productsToBuy = this.productsToBuy.filter(
+                (item) => item !== product
+            );
         }
     }
 
@@ -44,7 +46,7 @@ export class Basket {
         return this.productsToBuy.length;
     }
 
-    getProductsToBuyById(id: string): boolean {
+    protected getProductsToBuyById(id: string): boolean {
         let isItemInBasket = this.productsToBuy.find(
             (product) => product.id === id
         );

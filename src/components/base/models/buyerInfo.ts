@@ -8,19 +8,19 @@ interface ErrorsBuyer {
 }
 
 export class BuyerInfo {
-    payment: "online" | "cash";
+    payment: "online" | "cash" | "";
     email: string;
     phone: string;
     address: string;
 
     constructor() {
-        this.payment = "online";
+        this.payment = "";
         this.email = "";
         this.phone = "";
         this.address = "";
     }
 
-    setPayment(payment: "online" | "cash"): void {
+    setPayment(payment: "online" | "cash" | ""): void {
         this.payment = payment;
     }
 
@@ -46,36 +46,31 @@ export class BuyerInfo {
     }
 
     deleteBuyerInfo(): void {
-        this.payment = "online";
+        this.payment = "";
         this.email = "";
         this.phone = "";
         this.address = "";
     }
 
-    validateBuyerInfo(
-        payment: "online" | "cash",
-        email: string,
-        phone: string,
-        address: string
-    ): ErrorsBuyer | null {
+    validateBuyerInfo(): ErrorsBuyer | null {
         let errors: ErrorsBuyer = {};
         let hasErrors: boolean = false;
-        if (!payment) {
+        if (!this.payment) {
             errors.payment = "Не указан вид оплаты";
             hasErrors = true;
         }
 
-        if (!email) {
+        if (!this.email) {
             errors.email = "Введите емэйл";
             hasErrors = true;
         }
 
-        if (!phone) {
+        if (!this.phone) {
             errors.phone = "Введите номер телефона";
             hasErrors = true;
         }
 
-        if (!address) {
+        if (!this.address) {
             errors.address = "Укажите адрес";
             hasErrors = true;
         }

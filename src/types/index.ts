@@ -19,7 +19,7 @@ export interface IProduct {
 }
 
 export interface IBuyer {
-    payment: "online" | "cash";
+    payment: "online" | "cash" | "";
     email: string;
     phone: string;
     address: string;
