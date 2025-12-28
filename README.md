@@ -98,3 +98,100 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+## Данные
+В приложении используются две сущности, которые описывают данные, — товар и покупатель. Их можно описать такими интерфейсами:
+1. Товар
+```
+interface IProduct {
+  id: string; // - уникальный идентификатор каждого товара
+  description: string; // - описание, дополнительные сведения для каждого товара
+  image: string; // - иллюстрация каждого товара в качестве изображения
+  title: string; // - название каждого товара
+  category: string; // - категория, группа, к которой относится каждый товар
+  price: number | null; // - цена каждого товара, которая может быть установлена или не установлена
+}
+```
+2. Покупатель
+```
+interface IBuyer {
+  payment: TPayment; // - способ оплаты (онлайн | при получении)
+  email: string; // - email покупателя
+  phone: string; // - номер телефона покупателя
+  address: string; // - адрес покупателя
+}
+```
+
+## Модели данных
+Для учёта данных в приложении были созданы три класса, которые разделены между собой по смыслу и зонам ответственности:
+
+#### Класс Catalog
+Хранит товары, которые представлены в виде каталога/списка для покупки в приложении
+
+Конструктор:  
+`constructor() {this.products = []; this.selectedProduct = null;}`
+
+Поля класса:  
+`products: IProduct[];`- хранит массив всех товаров;
+`selectedProduct: IProduct | null;`- хранит товар, выбранный для подробного отображения;
+
+Методы класса:
+`setProducts(products: IProduct[]): void` - сохранение массива товаров полученного в параметрах метода;
+`getProducts(): IProduct[]` - получение массива товаров из модели;
+`getProductById(id: string): IProduct | undefined` - получение одного товара по его id;
+`setSelectedProduct(selectedProduct: IProduct): void` - сохранение товара для подробного отображения;
+`getSelectedProduct(): IProduct` - получение товара для подробного отображения.
+
+#### Класс Basket
+Хранит список товаров, которые пользователь выбрал для покупки (корзина)
+
+Конструктор:  
+`constructor() {this.productsToBuy = [];}`
+
+Поля класса:
+`productsToBuy: IProduct[];` - хранит массив товаров, выбранных покупателем для покупки.
+
+Методы класса:
+`getProductsToBuy(): IProduct[]` - получение массива товаров, которые находятся в корзине;
+`addProductsToBuy(product: IProduct): void` - добавление товара, который был получен в параметре, в массив корзины;
+`deleteProductsToBuy(product: IProduct): void` - удаление товара, полученного в параметре из массива корзины;
+`removeBusket(): void` - очистка корзины;
+`getCostProductsToBuy(): number` - получение стоимости всех товаров в корзине;
+`getQuantityProductsToBuy(): number` - получение количества товаров в корзине;
+`getProductsToBuyById(id: string): boolean` - проверка наличия товара в корзине по его id, полученного в параметр метода.
+
+#### Класс BuyerInfo
+Хранит данные о самом покупателе, указанные им при оформлении заказа
+
+Конструктор:  
+```
+constructor() {
+  this.payment: '';
+  this.email: '';
+  this.phone: '';
+  this.address: '';
+}
+```
+
+Поля класса:
+`payment: TPayment;` - способ оплаты (онлайн | при получении)
+`email: string;` - email покупателя
+`phone: string;` - номер телефона покупателя
+`address: string;` - адрес покупателя
+
+Методы класса:
+`setPayment(payment: TPayment): void` - сохранение выбранного способа оплаты;
+`setEmail(email: string): void`- сохранение email пользователя;
+`setPhone(phone: string): void` - сохранение номера телефона пользователя;
+`setAddress(address: string): void` - сохранение адреса пользователя;
+`getBuyerInfo(): IBuyer` - получение всех данных покупателя;
+`deleteBuyerInfo(): void` - очистка данных покупателя;
+Для валидации понадобится отдельный интерфейс:
+```
+interface ErrorsBuyer {
+  payment?: 'Не указан вид оплаты';
+  email?: 'Введите емэйл'
+  phone?: 'Введите номер телефона'
+  address?: 'Укажите адрес'
+}
+```
+`validateBuyerInfo(payment: TPayment, email: string, phone: string, address: string): ErrorsBuyer | null` - валидация данных.
