@@ -1,0 +1,56 @@
+import { IProduct } from "../../../types/index.ts";
+
+export class Basket {
+    productsToBuy: IProduct[];
+
+    constructor() {
+        this.productsToBuy = [];
+    }
+
+    getProductsToBuy(): IProduct[] {
+        return this.productsToBuy;
+    }
+
+    addProductsToBuy(product: IProduct): void {
+        let isItemInBasket = this.getProductsToBuyById(product.id);
+        if (!isItemInBasket) {
+            this.productsToBuy.push(product);
+        }
+    }
+
+    deleteProductsToBuy(product: IProduct): void {
+        let isItemInBasket = this.getProductsToBuyById(product.id);
+        if (isItemInBasket) {
+            this.productsToBuy.filter((item) => item !== product);
+        }
+    }
+
+    removeBusket(): void {
+        this.productsToBuy = [];
+    }
+
+    getCostProductsToBuy(): number {
+        let sum = 0;
+        for (let i = 0; i < this.productsToBuy.length; i++) {
+            let price = this.productsToBuy[i].price;
+            if (price) {
+                sum += price;
+            }
+        }
+        return sum;
+    }
+
+    getQuantityProductsToBuy(): number {
+        return this.productsToBuy.length;
+    }
+
+    getProductsToBuyById(id: string): boolean {
+        let isItemInBasket = this.productsToBuy.find(
+            (product) => product.id === id
+        );
+        if (isItemInBasket) {
+            return true;
+        }
+        return false;
+    }
+}
