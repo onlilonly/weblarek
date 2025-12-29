@@ -3,6 +3,9 @@ import { Catalog } from "./components/base/models/catalog.ts";
 import { Basket } from "./components/base/models/basket.ts";
 import { BuyerInfo } from "./components/base/models/buyerInfo.ts";
 import { apiProducts } from "./utils/data.ts";
+import { Communication } from "./components/base/models/communication.ts";
+import { Api } from "./components/base/Api.ts";
+import { API_URL } from "./utils/constants.ts";
 
 //Проверка работы Каталога:
 const productsModel = new Catalog();
@@ -110,3 +113,16 @@ console.log(
     "Валидация полученной информации №4: ",
     buyerInfoModel.validateBuyerInfo()
 );
+
+//Проверка работы связи с API:
+async function fetchCatalog() {
+    const apiModel = new Communication(new Api(API_URL));
+    const response = await apiModel.getItems();
+    productsModel.setProducts(response);
+    console.log(
+        "Массив товаров из каталога через API: ",
+        productsModel.getProducts()
+    );
+}
+
+fetchCatalog();

@@ -24,3 +24,16 @@ export interface IBuyer {
     phone: string;
     address: string;
 }
+
+export type IProductFromApi = IProduct[];
+
+type IBuyerFromApiSuccess = IBuyer & {
+    items: string[];
+    total: number;
+};
+
+type IBuyerFromApiError = {
+    error: string;
+};
+
+export type IBuyerFromApi = IBuyerFromApiSuccess | IBuyerFromApiError;
