@@ -1,4 +1,4 @@
-import { IProduct } from "../../../types/index.ts";
+import { IProduct } from "../../types";
 
 export class Catalog {
     products: IProduct[];

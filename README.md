@@ -1,4 +1,5 @@
 https://github.com/onlilonly/weblarek
+
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Vite
@@ -171,10 +172,10 @@ interface IBuyer {
 `getProductsToBuy(): IProduct[]` - получение массива товаров, которые находятся в корзине;
 `addProductsToBuy(product: IProduct): void` - добавление товара, который был получен в параметре, в массив корзины;
 `deleteProductsToBuy(product: IProduct): void` - удаление товара, полученного в параметре из массива корзины;
-`removeBusket(): void` - очистка корзины;
+`clearBusket(): void` - очистка корзины;
 `getCostProductsToBuy(): number` - получение стоимости всех товаров в корзине;
 `getQuantityProductsToBuy(): number` - получение количества товаров в корзине;
-`getProductsToBuyById(id: string): boolean` - проверка наличия товара в корзине по его id, полученного в параметр метода.
+`isProductInBasket(id: string): boolean` - проверка наличия товара в корзине по его id, полученного в параметр метода.
 
 #### Класс BuyerInfo
 
@@ -204,17 +205,7 @@ constructor() {
 `setAddress(address: string): void` - сохранение адреса пользователя;
 `getBuyerInfo(): IBuyer` - получение всех данных покупателя;
 `deleteBuyerInfo(): void` - очистка данных покупателя;
-Для валидации понадобится отдельный интерфейс:
-
-```
-interface ErrorsBuyer {
-  payment?: 'Не указан вид оплаты';
-  email?: 'Введите емэйл'
-  phone?: 'Введите номер телефона'
-  address?: 'Укажите адрес'
-}
-```
-
+Для валидации понадобится отдельный тип: `type ErrorsBuyer = Partial<Record<keyof IBuyer, string>>;`, который получает объединение всех ключей интерфейса IBuyer, создаёт объектный тип, где каждый из этих ключей имеет тип string, делает все поля необязательными.
 `validateBuyerInfo(): ErrorsBuyer | null` - валидация данных.
 
 ## Слой коммуникации
@@ -224,11 +215,11 @@ interface ErrorsBuyer {
 Этот класс использует композицию, хранит внутри себя экземпляр класса Api, чтобы выполнить запрос на сервер с помощью метода get класса Api и получает с сервера объект с массивом товаров.
 
 Конструктор:  
-`constructor(api: Api) {this.api = api;}`
+`constructor(api: IApi) {this.api = api;}`
 
 Поля класса:
-`api: Api` - хранит экземпляр класса Api.
+`api: IApi;` - объект, соответствующий интерфейсу IApi и использующий методы get и post.
 
 Методы класса:
 `getItems(): Promise<IProductFromApi>` - получение с сервера объекта с массивом товаров;
-`postOrder(orderInfo: IBuyerFromApi): void` - отправка на сервер данных о покупателе и выбранных товарах.
+`postOrder(orderData: IBuyerToApi): Promise<IBuyerToApi>` - отправка на сервер данных о покупателе и выбранных товарах.

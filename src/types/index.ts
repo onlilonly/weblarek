@@ -25,15 +25,18 @@ export interface IBuyer {
     address: string;
 }
 
-export type IProductFromApi = IProduct[];
+export type IProductFromApi = {
+    total: number;
+    items: IProduct[];
+}
 
-type IBuyerFromApiSuccess = IBuyer & {
+type IBuyerToApiSuccess = IBuyer & {
     items: string[];
     total: number;
 };
 
-type IBuyerFromApiError = {
+type IBuyerToApiError = {
     error: string;
 };
 
-export type IBuyerFromApi = IBuyerFromApiSuccess | IBuyerFromApiError;
+export type IBuyerToApi = IBuyerToApiSuccess | IBuyerToApiError;

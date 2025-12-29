@@ -1,4 +1,4 @@
-import { IProduct } from "../../../types/index.ts";
+import { IProduct } from "../../types";
 
 export class Basket {
     productsToBuy: IProduct[];
@@ -12,22 +12,19 @@ export class Basket {
     }
 
     addProductsToBuy(product: IProduct): void {
-        let isItemInBasket = this.getProductsToBuyById(product.id);
+        const isItemInBasket = this.isProductInBasket(product.id);
         if (!isItemInBasket) {
             this.productsToBuy.push(product);
         }
     }
 
     deleteProductsToBuy(product: IProduct): void {
-        const isItemInBasket = this.getProductsToBuyById(product.id);
-        if (isItemInBasket) {
-            this.productsToBuy = this.productsToBuy.filter(
-                (item) => item !== product
-            );
-        }
+        this.productsToBuy = this.productsToBuy.filter(
+            (item) => item !== product
+        );
     }
 
-    removeBusket(): void {
+    clearBusket(): void {
         this.productsToBuy = [];
     }
 
@@ -46,7 +43,7 @@ export class Basket {
         return this.productsToBuy.length;
     }
 
-    protected getProductsToBuyById(id: string): boolean {
+    protected isProductInBasket(id: string): boolean {
         let isItemInBasket = this.productsToBuy.find(
             (product) => product.id === id
         );

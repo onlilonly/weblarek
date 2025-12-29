@@ -1,11 +1,6 @@
-import { IBuyer } from "../../../types/index.ts";
+import { IBuyer } from "../../types";
 
-interface ErrorsBuyer {
-    payment?: "Не указан вид оплаты";
-    email?: "Введите емэйл";
-    phone?: "Введите номер телефона";
-    address?: "Укажите адрес";
-}
+type ErrorsBuyer = Partial<Record<keyof IBuyer, string>>;
 
 export class BuyerInfo {
     payment: "online" | "cash" | "";
@@ -54,31 +49,23 @@ export class BuyerInfo {
 
     validateBuyerInfo(): ErrorsBuyer | null {
         const errors: ErrorsBuyer = {};
-        let hasErrors: boolean = false;
+
         if (!this.payment) {
             errors.payment = "Не указан вид оплаты";
-            hasErrors = true;
         }
 
         if (!this.email) {
             errors.email = "Введите емэйл";
-            hasErrors = true;
         }
 
         if (!this.phone) {
             errors.phone = "Введите номер телефона";
-            hasErrors = true;
         }
 
         if (!this.address) {
             errors.address = "Укажите адрес";
-            hasErrors = true;
         }
 
-        if (hasErrors) {
-            return errors;
-        }
-
-        return null;
+        return errors;
     }
 }

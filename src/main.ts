@@ -1,9 +1,9 @@
 import "./scss/styles.scss";
-import { Catalog } from "./components/base/models/catalog.ts";
-import { Basket } from "./components/base/models/basket.ts";
-import { BuyerInfo } from "./components/base/models/buyerInfo.ts";
+import { Catalog } from "./components/models/catalog.ts";
+import { Basket } from "./components/models/basket.ts";
+import { BuyerInfo } from "./components/models/buyerInfo.ts";
 import { apiProducts } from "./utils/data.ts";
-import { Communication } from "./components/base/models/communication.ts";
+import { Communication } from "./components/models/communication.ts";
 import { Api } from "./components/base/Api.ts";
 import { API_URL } from "./utils/constants.ts";
 
@@ -61,14 +61,14 @@ console.log(
     productsToBuyModel.getQuantityProductsToBuy()
 );
 
-productsToBuyModel.removeBusket();
+productsToBuyModel.clearBusket();
 console.log(
     "Товары в корзине после очистки корзины: ",
     productsToBuyModel.getProductsToBuy()
 );
 
 /*
-getProductsToBuyById является встроенным методом, который используется только внутри класса, а не вызывается напрямую, поэтому его не проверяем
+isProductInBasket является встроенным методом, который используется только внутри класса, а не вызывается напрямую, поэтому его не проверяем
 */
 
 //Проверка работы Информации о покупателе:
@@ -118,7 +118,7 @@ console.log(
 async function fetchCatalog() {
     const apiModel = new Communication(new Api(API_URL));
     const response = await apiModel.getItems();
-    productsModel.setProducts(response);
+    productsModel.setProducts(response.items);
     console.log(
         "Массив товаров из каталога через API: ",
         productsModel.getProducts()
