@@ -53,7 +53,7 @@ export class BuyerInfo {
     }
 
     validateBuyerInfo(): ErrorsBuyer | null {
-        let errors: ErrorsBuyer = {};
+        const errors: ErrorsBuyer = {};
         let hasErrors: boolean = false;
         if (!this.payment) {
             errors.payment = "Не указан вид оплаты";

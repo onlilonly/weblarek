@@ -19,7 +19,7 @@ export class Basket {
     }
 
     deleteProductsToBuy(product: IProduct): void {
-        let isItemInBasket = this.getProductsToBuyById(product.id);
+        const isItemInBasket = this.getProductsToBuyById(product.id);
         if (isItemInBasket) {
             this.productsToBuy = this.productsToBuy.filter(
                 (item) => item !== product
