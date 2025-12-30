@@ -206,7 +206,7 @@ constructor() {
 `getBuyerInfo(): IBuyer` - получение всех данных покупателя;
 `deleteBuyerInfo(): void` - очистка данных покупателя;
 Для валидации понадобится отдельный тип: `type ErrorsBuyer = Partial<Record<keyof IBuyer, string>>;`, который получает объединение всех ключей интерфейса IBuyer, создаёт объектный тип, где каждый из этих ключей имеет тип string, делает все поля необязательными.
-`validateBuyerInfo(): ErrorsBuyer | null` - валидация данных.
+`validateBuyerInfo(): ErrorsBuyer` - валидация данных.
 
 ## Слой коммуникации
 
@@ -222,4 +222,4 @@ constructor() {
 
 Методы класса:
 `getItems(): Promise<IProductFromApi>` - получение с сервера объекта с массивом товаров;
-`postOrder(orderData: IBuyerToApi): Promise<IBuyerToApi>` - отправка на сервер данных о покупателе и выбранных товарах.
+`postOrder(orderData: IOrderRequest): Promise<IOrderResponse>` - отправка на сервер данных о покупателе и выбранных товарах.

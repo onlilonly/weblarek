@@ -47,7 +47,7 @@ export class BuyerInfo {
         this.address = "";
     }
 
-    validateBuyerInfo(): ErrorsBuyer | null {
+    validateBuyerInfo(): ErrorsBuyer {
         const errors: ErrorsBuyer = {};
 
         if (!this.payment) {

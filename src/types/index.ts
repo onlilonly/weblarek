@@ -30,13 +30,18 @@ export type IProductFromApi = {
     items: IProduct[];
 }
 
-type IBuyerToApiSuccess = IBuyer & {
+export type IOrderRequest = IBuyer & {
     items: string[];
     total: number;
 };
 
-type IBuyerToApiError = {
+type IOrderErrorResponse = {
     error: string;
 };
 
-export type IBuyerToApi = IBuyerToApiSuccess | IBuyerToApiError;
+type IOrderSuccessResponse = {
+    id: string;
+    total: number;
+}
+
+export type IOrderResponse =  IOrderSuccessResponse | IOrderErrorResponse;
