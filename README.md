@@ -145,11 +145,12 @@ interface IBuyer {
 Хранит товары, которые представлены в виде каталога/списка для покупки в приложении
 
 Конструктор:  
-`constructor() {this.products = []; this.selectedProduct = null;}`
+`constructor(events: IEvents) {this.products = []; this.selectedProduct = null; this.events = events;}`
 
 Поля класса:  
 `products: IProduct[];`- хранит массив всех товаров;
 `selectedProduct: IProduct | null;`- хранит товар, выбранный для подробного отображения;
+`events: IEvents;` - хранит список событий, которые могут быть инициированы.
 
 Методы класса:
 `setProducts(products: IProduct[]): void` - сохранение массива товаров полученного в параметрах метода;
@@ -163,10 +164,11 @@ interface IBuyer {
 Хранит список товаров, которые пользователь выбрал для покупки (корзина)
 
 Конструктор:  
-`constructor() {this.productsToBuy = [];}`
+`constructor(events: IEvents) {this.productsToBuy = []; this.events = events;}`
 
 Поля класса:
-`productsToBuy: IProduct[];` - хранит массив товаров, выбранных покупателем для покупки.
+`productsToBuy: IProduct[];` - хранит массив товаров, выбранных покупателем для покупки;
+`events: IEvents;` - хранит список событий, которые могут быть инициированы.
 
 Методы класса:
 `getProductsToBuy(): IProduct[]` - получение массива товаров, которые находятся в корзине;
@@ -184,19 +186,21 @@ interface IBuyer {
 Конструктор:
 
 ```
-constructor() {
+constructor(events: IEvents) {
   this.payment = '';
   this.email = '';
   this.phone = '';
   this.address = '';
+  this.events = events;
 }
 ```
 
 Поля класса:
-`payment: 'online' | 'cash' | '';` - способ оплаты (онлайн | при получении)
-`email: string;` - email покупателя
-`phone: string;` - номер телефона покупателя
-`address: string;` - адрес покупателя
+`payment: 'online' | 'cash' | '';` - способ оплаты (онлайн | при получении);
+`email: string;` - email покупателя;
+`phone: string;` - номер телефона покупателя;
+`address: string;` - адрес покупателя;
+`events: IEvents;` - хранит список событий, которые могут быть инициированы.
 
 Методы класса:
 `setPayment(payment: 'online' | 'cash' | ''): void` - сохранение выбранного способа оплаты;
@@ -524,3 +528,17 @@ interface EmailPhoneFormData {
 `address:input` - уведомление: пользователь ввел адрес;
 `email:input` - уведомление: пользователь ввел email;
 `phone:input` - уведомление: пользователь ввел телефон;
+
+## Генерируемые события(Models)
+
+`catalog:setProducts` - уведомление: необходимо установить список товаров в каталоге;
+`catalog:setSelectedProduct` - уведомление: необходимо установить выбранный пользователем товар;
+`basket:addProduct` - уведомление: необходимо добавить товар в корзину;
+`basket:deleteProduct` - уведомление: необходимо удалить товар из корзины;
+`basket:clear` - уведомление: необходимо очистить содержимое корзины;
+`buyer:changePayment` - уведомление: необходимо изменить способ оплаты;
+`buyer:changeEmail` - уведомление: необходимо изменить email;
+`buyer:changePhone` - уведомление: необходимо изменить телефон;
+`buyer:changeAddress` - уведомление: необходимо изменить адрес;
+`buyer:clear` - уведомление: необходимо очистить введенные пользователем данные;
+``
