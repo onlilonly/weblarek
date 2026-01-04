@@ -231,137 +231,146 @@ constructor() {
 Отображение шапки сайта и состояния корзины.
 
 Интерфейс, используемый классом:
+
 ```
-interface headerData {
+interface HeaderData {
   counter: number;
 }
 ```
 
 Конструктор:
-`constructor() {this.busketButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.counterElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.busketButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.counterElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `busketButton: HTMLButtonElement` - кнопка открытия корзины;
 `counterElement: HTMLElement` - счетчик количества товаров в корзине.
 
 Методы класса:
-`set counter(value: number):void` - обновляет видимое количество товаров в корзине.
+`set counter(value: number)` - обновляет видимое количество товаров в корзине.
 
 #### Класс Gallery
 
 Отображение списка карточеск на странице.
 
 Интерфейс, используемый классом:
+
 ```
-interface galleryData {
+interface GalleryData {
   gallery: HTMLElement[];
 }
 ```
 
 Конструктор:
-`constructor() {this.galleryElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.galleryElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `galleryElement: HTMLElement` - контейнер для карточек товаров на странице.
 
 Методы класса:
-`set gallery(items: HTMLElement[]):void` - обновляет отображаемые карточки товаров на странице.
+`set gallery(items: HTMLElement[])` - обновляет отображаемые карточки товаров на странице.
 
 #### Класс ModalWindow
 
 Отображает и скрывает модальное окно.
 
 Интерфейс, используемый классом:
+
 ```
-interface modalData {
+interface ModalData {
   content: HTMLElement;
 }
 ```
 
 Конструктор:
-`constructor() {this.closeButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.modalContainer = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.closeButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.modalContainer = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `closeButton: HTMLButtonElement` - кнопка закрытия модального окна;
 `modalContainer: HTMLElement` - контейнер для контента модального окна.
 
 Методы класса:
-`set content(item: HTMLElement):void` - обновляет контент отображаемый в контейнере модального окна.
+`set content(item: HTMLElement)` - обновляет контент отображаемый в контейнере модального окна;
+`open():void` - открывает модальное окно;
+`close():void` - закрывает модальное окно.
 
 #### Класс OrderSuccess
 
 Отображает окно успешного оформления заказа(вставляется в контейнер модального окна).
 
 Интерфейс, используемый классом:
+
 ```
-interface orderSuccessData {
+interface OrderSuccessData {
   totalSum: number;
 }
 ```
 
 Конструктор:
-`constructor() {this.totalSumElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.successButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.totalSumElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.successButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `totalSumElement: HTMLElement` - итоговая стоимость всех товаров;
 `successButton: HTMLButtonElement` - кнопка закрытия модального окна.
 
 Методы класса:
-`set totalSum(value: number):void` - обновляет итоговую стоимость купленных товаров.
+`set totalSum(value: number)` - обновляет итоговую стоимость купленных товаров.
 
 #### Родительский класс ProductCard
 
 Базовый класс для используемых карточек товаров, отображает общие поля и методы, используемые в них.
 
 Интерфейс, используемый классом:
+
 ```
-interface productCardData {
+interface ProductCardData {
   title: string;
   price: string;
 }
 ```
 
 Конструктор:
-`constructor() {this.titleElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.priceElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement) {this.titleElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.priceElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `titleElement: HTMLElement` - название товара;
 `priceElement: HTMLElement` - стоимость товара.
 
 Методы класса:
-`set title(value: string):void` - устанавливает название товара в карточке;
-`set price(value: string):void` - устанавливает стоимость товара в карточке.
+`set title(value: string)` - устанавливает название товара в карточке;
+`set price(value: string)` - устанавливает стоимость товара в карточке.
 
 #### Класс ProductInGallery(наследует ProductCard)
 
 Отображает карточку товара в каталоге.
 
 Интерфейс, используемый классом:
+
 ```
-interface productInGalleryData {
+interface ProductInGalleryData {
   category: string;
   image: string;
 }
 ```
 
 Конструктор:
-`constructor() {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `categoryElement: HTMLElement` - категория товара;
 `imageElement: HTMLImageElement` - изображение товара.
 
 Методы класса:
-`set category(value: string):void` - устанавливает категорию товара в карточке;
-`set image(value: string):void` - устанавливает изображение товара в карточке.
+`set category(value: string)` - устанавливает категорию товара в карточке;
+`set image(value: string)` - устанавливает изображение товара в карточке.
 
 #### Класс ProductPreview(наследует ProductCard)
 
 Предпросмотр товара(вставляется в контейнер модального окна).
 
 Интерфейс, используемый классом:
+
 ```
-interface productPreviewData {
+interface ProductPreviewData {
   category: string;
   text: string;
   image: string;
@@ -369,7 +378,7 @@ interface productPreviewData {
 ```
 
 Конструктор:
-`constructor() {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.textElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.cardButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.textElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.cardButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `categoryElement: HTMLElement` - категория товара;
@@ -378,45 +387,47 @@ interface productPreviewData {
 `imageElement: HTMLImageElement` - изображение товара.
 
 Методы класса:
-`set category(value: string):void` - устанавливает категорию товара в карточке;
-`set text(value: string):void` - устанавливает описание товара в карточке;
-`set image(value: string):void` - устанавливает изображение товара в карточке.
+`set category(value: string)` - устанавливает категорию товара в карточке;
+`set text(value: string)` - устанавливает описание товара в карточке;
+`set image(value: string)` - устанавливает изображение товара в карточке.
 
 #### Класс ProductInBasket(наследует ProductCard)
 
 Карточка товара, которая вставляется в корзину с товарами.
 
 Интерфейс, используемый классом:
+
 ```
-interface productInBasketData {
+interface ProductInBasketData {
   index: number;
 }
 ```
 
 Конструктор:
-`constructor() {this.productIndexElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.deleteButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.productIndexElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.deleteButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `productIndexElement: HTMLElement` - порядковый номер товара в корзине;
 `deleteButton: HTMLButtonElement` - кнопка удаления товара из корзины.
 
 Методы класса:
-`set index(value: number):void` - устанавливает номер товара в корзине.
+`set index(value: number)` - устанавливает номер товара в корзине.
 
 #### Класс BasketModal
 
 Отвечает за отображение корзины(вставляется в контейнер модального окна).
 
 Интерфейс, используемый классом:
+
 ```
-interface basketModalsData {
+interface BasketModalData {
   item: HTMLElement[];
   totalPrice: number;
 }
 ```
 
 Конструктор:
-`constructor() {this.listElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.registerButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.totalPriceElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.listElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.registerButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.totalPriceElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `listElement: HTMLElement` - список товаров к покупке;
@@ -424,45 +435,47 @@ interface basketModalsData {
 `totalPriceElement: HTMLElement` - общая сумма заказа.
 
 Методы класса:
-`set item(items: HTMLElement[]):void` - обновляет список товаров в корзине;
-`set totalPrice(value: number):void` - обновляет общую сумму заказа.
+`set item(items: HTMLElement[])` - обновляет список товаров в корзине;
+`set totalPrice(value: number)` - обновляет общую сумму заказа.
 
 #### Родительский класс Form
 
 Базовый класс для всех форм, отображает общие поля и методы, используемые в них.
 
 Интерфейс, используемый классом:
+
 ```
-interface formData {
+interface FormData {
   submitText: string;
   errors: HTMLElement[];
 }
 ```
 
 Конструктор:
-`constructor() {this.submitButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.errorsElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.submitButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.errorsElement = ensureElement<HTMLElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `submitButton: HTMLButtonElement` - кнопка отправки формы;
 `errorsElement: HTMLElement` - список ошибок формы.
 
 Методы класса:
-`set submitText(value: string):void` - изменяет текст кнопки;
-`set errors(items: HTMLElement[]):void` - отображает ошибки валидации.
+`set submitText(value: string)` - изменяет текст кнопки;
+`set errors(items: HTMLElement[])` - отображает ошибки валидации.
 
 #### Класс PaymentAddressForm(наследует Form)
 
 Форма выбора способа оплаты и адреса(вставляется в контейнер модального окна).
 
 Интерфейс, используемый классом:
+
 ```
-interface paymentAddressFormData {
+interface PaymentAddressFormData {
   address: string;
 }
 ```
 
 Конструктор:
-`constructor() {this.paymentOnlineButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.paymentCashButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.addressInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.paymentOnlineButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.paymentCashButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.addressInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `paymentOnlineButton: HTMLButtonElement` - кнопка выбора оплаты онлайн;
@@ -470,27 +483,44 @@ interface paymentAddressFormData {
 `addressInputElement: HTMLInputElement` - поле ввода адреса.
 
 Методы класса:
-`set address(value: string):void` - устанавливает адрес доставки.
+`set address(value: string)` - устанавливает адрес доставки.
 
 #### Класс EmailPhoneForm(наследует Form)
 
 Форма ввода почты и телефона(вставляется в контейнер модального окна).
 
 Интерфейс, используемый классом:
+
 ```
-interface emailPhoneFormData {
+interface EmailPhoneFormData {
   email: string;
   phone: string;
 }
 ```
 
 Конструктор:
-`constructor() {this.emailInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер); this.phoneInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.emailInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер); this.phoneInputElement = ensureElement<HTMLInputElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `emailInputElement: HTMLInputElement` - поле ввода почты;
 `phoneInputElement: HTMLInputElement` - поле ввода телефона.
 
 Методы класса:
-`set email(value: string):void` - устанавливает почту покупателя;
-`set phone(value: string):void` - устанавливает телефон покупателя.
+`set email(value: string)` - устанавливает почту покупателя;
+`set phone(value: string)` - устанавливает телефон покупателя.
+
+## Генерируемые события(View)
+
+`basket:open` - уведомление: пользователь нажал на иконку корзины;
+`modal:close` - уведомление: пользователь нажал на кнопку закрытия корзины или кликнул вне модального окна;
+`orderSucces:close` - уведомление: пользователь нажал на кнопку успешного завершения оформления заказа;
+`product:select` - уведомление: пользователь нажал на карточку товара в каталоге;
+`product:choose` - уведомление: пользователь нажал на кнопку добавления в корзину товара;
+`product:delete` - уведомление: пользователь нажал на кнопку удаления товара из корзины;
+`order:submit` - уведомление: пользователь нажал на кнопку продолжения оформления заказа;
+`contacts:submit` - уведомление: пользователь нажал на кнопку "Оплатить";
+`payment:online` - уведомление: пользователь нажал на кнопку оплаты онлайн;
+`payment:cash` - уведомление: пользователь нажал на кнопку оплаты при получении;
+`address:input` - уведомление: пользователь ввел адрес;
+`email:input` - уведомление: пользователь ввел email;
+`phone:input` - уведомление: пользователь ввел телефон;
