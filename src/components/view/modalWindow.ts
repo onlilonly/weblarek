@@ -20,16 +20,19 @@ export class ModalWindow extends Component<ModalData> {
             ".modal__content",
             this.container
         );
-        this.closeButton.addEventListener("click", () => this.close());
+        this.closeButton.addEventListener("click", () =>
+            this.events.emit("modal:close")
+        );
         this.container.addEventListener("click", (e) => {
             if (e.target === this.container) {
-                this.close();
+                this.events.emit("modal:close");
             }
         });
     }
 
     set content(item: HTMLElement) {
-        this.modalContainer.replaceChildren(item);
+        this.modalContainer.replaceChildren();
+        this.modalContainer.appendChild(item);
         this.open();
     }
 
@@ -39,6 +42,5 @@ export class ModalWindow extends Component<ModalData> {
 
     close(): void {
         this.container.classList.remove("modal_active");
-        this.events.emit("modal:close");
     }
 }

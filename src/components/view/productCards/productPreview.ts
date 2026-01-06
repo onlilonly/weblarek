@@ -2,17 +2,19 @@ import { ensureElement } from "../../../utils/utils";
 import { IEvents } from "../../base/Events";
 import { ProductCard } from "./productCard";
 import { categoryMap } from "../../../utils/constants";
+import { CDN_URL } from "../../../utils/constants";
 
 interface ProductPreviewData {
     category: string;
-    text: string;
+    description: string;
     image: string;
+    buttonText: string;
 }
 
 export class ProductPreview extends ProductCard<ProductPreviewData> {
     protected categoryElement: HTMLElement;
     protected imageElement: HTMLImageElement;
-    protected textElement: HTMLElement;
+    protected descriptionElement: HTMLElement;
     protected cardButton: HTMLButtonElement;
 
     constructor(container: HTMLElement, protected events: IEvents) {
@@ -25,7 +27,7 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
             ".card__image",
             this.container
         );
-        this.textElement = ensureElement<HTMLElement>(
+        this.descriptionElement = ensureElement<HTMLElement>(
             ".card__text",
             this.container
         );
@@ -34,13 +36,14 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
             this.container
         );
         this.cardButton.addEventListener("click", () => {
-            this.events.emit("product:choose");
+            this.events.emit("product:choose", this);
+            this.events.emit("product:select", this);
         });
     }
 
     set category(value: string) {
         this.categoryElement.textContent = value;
-        this.categoryElement.className = ".card__category";
+        this.categoryElement.className = "card__category";
         const categoryClass = Object.entries(categoryMap).find(
             ([key]) => key === value
         );
@@ -50,10 +53,18 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
     }
 
     set image(value: string) {
-        this.setImage(this.imageElement, value);
+        this.setImage(this.imageElement, CDN_URL + value);
     }
 
-    set text(value: string) {
-        this.textElement.textContent = value;
+    set description(value: string) {
+        this.descriptionElement.textContent = value;
+    }
+
+    set buttonText(value: string) {
+        this.cardButton.textContent = value;
+    }
+
+    buttonProhibited() {
+        this.cardButton.disabled = true;
     }
 }

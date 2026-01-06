@@ -3,6 +3,7 @@ import { ensureElement } from "../../../utils/utils";
 import { IEvents } from "../../base/Events";
 
 interface PaymentAddressFormData {
+    payment: "online" | "cash" | "";
     address: string;
 }
 
@@ -26,18 +27,32 @@ export class PaymentAddressForm extends Form<PaymentAddressFormData> {
             this.container
         );
         this.paymentOnlineButton.addEventListener("click", () => {
-            this.paymentCashButton.classList.remove("button_alt-active");
-            this.paymentOnlineButton.classList.add("button_alt-active");
             this.events.emit("payment:online");
         });
         this.paymentCashButton.addEventListener("click", () => {
-            this.paymentOnlineButton.classList.remove("button_alt-active");
-            this.paymentCashButton.classList.add("button_alt-active");
             this.events.emit("payment:cash");
         });
         this.addressInputElement.addEventListener("input", () => {
-            this.events.emit("address:input");
+            this.events.emit("address:input", {
+                value: this.addressInputElement.value,
+            });
         });
+        this.submitButton.addEventListener("click", () => {
+            this.events.emit("order:submit");
+        });
+    }
+
+    set payment(value: "online" | "cash" | "") {
+        if (value === "online") {
+            this.paymentCashButton.classList.remove("button_alt-active");
+            this.paymentOnlineButton.classList.add("button_alt-active");
+        } else if (value === "cash") {
+            this.paymentOnlineButton.classList.remove("button_alt-active");
+            this.paymentCashButton.classList.add("button_alt-active");
+        } else if (value === "") {
+            this.paymentCashButton.classList.remove("button_alt-active");
+            this.paymentOnlineButton.classList.remove("button_alt-active");
+        }
     }
 
     set address(value: string) {

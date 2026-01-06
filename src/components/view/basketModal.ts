@@ -3,8 +3,8 @@ import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/Events";
 
 interface BasketModalData {
-  item: HTMLElement[];
-  totalPrice: number;
+    item: HTMLElement[];
+    totalPrice: number;
 }
 
 export class BasketModal extends Component<BasketModalData> {
@@ -26,16 +26,17 @@ export class BasketModal extends Component<BasketModalData> {
             ".basket__price",
             this.container
         );
-        this.registerButton.addEventListener('click', () => {
-          this.events.emit('busket:submit')
-        })
+        this.registerButton.addEventListener("click", () => {
+            this.events.emit("busket:submit");
+        });
     }
 
     set item(items: HTMLElement[]) {
-      this.listElement.replaceChildren(...items);
-    };
-    
+        this.listElement.replaceChildren();
+        this.listElement.replaceChildren(...items);
+    }
+
     set totalPrice(value: number) {
-        this.totalPriceElement.textContent = `${value} синапсов`
-    };
+        this.totalPriceElement.textContent = `${value} синапсов`;
+    }
 }

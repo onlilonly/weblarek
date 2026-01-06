@@ -21,7 +21,7 @@ export class ProductInBasket extends ProductCard<ProductInBasketData> {
             this.container
         );
         this.deleteButton.addEventListener("click", () => {
-            this.events.emit("product:delete");
+            this.events.emit("product:delete", this);
         });
     }
 

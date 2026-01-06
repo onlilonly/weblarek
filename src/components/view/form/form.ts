@@ -3,8 +3,7 @@ import { ensureElement } from "../../../utils/utils";
 import { IEvents } from "../../base/Events";
 
 interface FormData {
-    submitText: string;
-    errors: HTMLElement[];
+    errors: string;
 }
 
 export abstract class Form<T> extends Component<T & FormData> {
@@ -21,16 +20,16 @@ export abstract class Form<T> extends Component<T & FormData> {
             ".form__errors",
             this.container
         );
-        this.submitButton.addEventListener("click", () => {
-            this.events.emit(`${this.container.dataset.name}:submit`);
+        this.submitButton.addEventListener("click", (e) => {
+            e.preventDefault();
         });
     }
 
-    set submitText(value: string) {
-        this.submitButton.textContent = value;
+    allowedButton() {
+        this.submitButton.disabled = false;
     }
-    
-    set errors(items: HTMLElement[]) {
-        this.errorsElement.replaceChildren(...items);
+
+    set errors(item: string) {
+        this.errorsElement.textContent = item;
     }
 }

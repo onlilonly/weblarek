@@ -2,6 +2,7 @@ import { ensureElement } from "../../../utils/utils";
 import { IEvents } from "../../base/Events";
 import { ProductCard } from "./productCard";
 import { categoryMap } from "../../../utils/constants";
+import { CDN_URL } from "../../../utils/constants";
 
 interface ProductInGalleryData {
     category: string;
@@ -23,13 +24,13 @@ export class ProductInGallery extends ProductCard<ProductInGalleryData> {
             this.container
         );
         this.container.addEventListener("click", () => {
-            this.events.emit("product:select");
+            this.events.emit("product:select", this);
         });
     }
 
     set category(value: string) {
         this.categoryElement.textContent = value;
-        this.categoryElement.className = ".card__category";
+        this.categoryElement.className = "card__category";
         const categoryClass = Object.entries(categoryMap).find(
             ([key]) => key === value
         );
@@ -39,6 +40,6 @@ export class ProductInGallery extends ProductCard<ProductInGalleryData> {
     }
 
     set image(value: string) {
-        this.setImage(this.imageElement, value);
+        this.setImage(this.imageElement, CDN_URL + value);
     }
 }

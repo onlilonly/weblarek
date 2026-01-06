@@ -25,8 +25,11 @@ export abstract class ProductCard<T> extends Component<T & ProductCardData> {
     set title(value: string) {
         this.titleElement.textContent = value;
     }
-    
+
     set price(value: string) {
-        this.titleElement.textContent = value;
+        this.priceElement.textContent = `${value} синапсов`;
+        if (value === null) {
+            this.priceElement.textContent = "Бесценно";
+        }
     }
 }
