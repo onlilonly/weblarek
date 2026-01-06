@@ -63,11 +63,20 @@ events.on("basket:open", () => {
 });
 
 events.on("product:select", (product: IProduct) => {
+    productsModel.setSelectedProduct(product);
+    console.log(productsModel.getSelectedProduct());
+});
+
+events.on("catalog:setSelectedProduct", () => {
+    const product = productsModel.getSelectedProduct();
+    if (!product) return;
     const productSelected = productsModel.getProductById(product.id);
     if (!productSelected) return;
-    const element = cloneTemplate<HTMLElement>("#card-preview");
-    const previewCard = new ProductPreview(element, events);
-    const isInBusket = productsToBuyModel.isProductInBasket(product.id);
+    const previewCard = new ProductPreview(
+        cloneTemplate<HTMLElement>("#card-preview"),
+        events
+    );
+    const isInBusket = productsToBuyModel.isProductInBasket(productSelected.id);
     previewCard.buttonText = isInBusket ? "Удалить из корзины" : "Купить";
     if (productSelected.price === null) {
         previewCard.buttonText = "Недоступно";
@@ -77,15 +86,24 @@ events.on("product:select", (product: IProduct) => {
     modalWindowModel.content = previewCard.render();
 });
 
-events.on("product:choose", (product: IProduct) => {
+events.on("product:choose", () => {
+    const product = productsModel.getSelectedProduct();
+    if (!product) return;
     const productToBuy = productsModel.getProductById(product.id);
     if (!productToBuy) return;
+    const previewCard = new ProductPreview(
+        cloneTemplate<HTMLElement>("#card-preview"),
+        events
+    );
     const isInBusket = productsToBuyModel.isProductInBasket(product.id);
     if (isInBusket) {
         productsToBuyModel.deleteProductsToBuy(productToBuy);
     } else {
         productsToBuyModel.addProductsToBuy(productToBuy);
     }
+    previewCard.buttonText = isInBusket ? "Купить" : "Удалить из корзины";
+    Object.assign(previewCard as object, productToBuy);
+    modalWindowModel.content = previewCard.render();
 });
 
 events.on("basket:addProduct", () => {

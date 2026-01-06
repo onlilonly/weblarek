@@ -376,24 +376,27 @@ interface ProductInGalleryData {
 ```
 interface ProductPreviewData {
   category: string;
-  text: string;
+  description: string;
   image: string;
+  buttonText: "Удалить из корзины" | "Купить" | "Недоступно";
 }
 ```
 
 Конструктор:
-`constructor(container: HTMLElement, protected events: IEvents) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.textElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.cardButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, protected events: IEvents) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.descriptionElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.cardButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `categoryElement: HTMLElement` - категория товара;
-`textElement: HTMLElement` - описание товара;
+`descriptionElement: HTMLElement` - описание товара;
 `cardButton: HTMLButtonElement` - кнопка добавления товара в корзину;
 `imageElement: HTMLImageElement` - изображение товара.
 
 Методы класса:
 `set category(value: string)` - устанавливает категорию товара в карточке;
-`set text(value: string)` - устанавливает описание товара в карточке;
-`set image(value: string)` - устанавливает изображение товара в карточке.
+`set description(value: string)` - устанавливает описание товара в карточке;
+`set image(value: string)` - устанавливает изображение товара в карточке;
+`set buttonText(value: "Удалить из корзины" | "Купить" | "Недоступно")` - устанавливает текст кнопки в карточке товара;
+`buttonProhibited()` - делает кнопку запрещенной для нажатия.
 
 #### Класс ProductInBasket(наследует ProductCard)
 
@@ -450,8 +453,7 @@ interface BasketModalData {
 
 ```
 interface FormData {
-  submitText: string;
-  errors: HTMLElement[];
+  errors: string;
 }
 ```
 
@@ -463,8 +465,8 @@ interface FormData {
 `errorsElement: HTMLElement` - список ошибок формы.
 
 Методы класса:
-`set submitText(value: string)` - изменяет текст кнопки;
-`set errors(items: HTMLElement[])` - отображает ошибки валидации.
+`set errors(item: string)` - отображает ошибки валидации;
+`allowedButton()` - делает кнопку разрешенной для нажатия после того, как все поля заполнены.
 
 #### Класс PaymentAddressForm(наследует Form)
 
@@ -474,6 +476,7 @@ interface FormData {
 
 ```
 interface PaymentAddressFormData {
+  payment: "online" | "cash" | "";
   address: string;
 }
 ```
@@ -487,6 +490,7 @@ interface PaymentAddressFormData {
 `addressInputElement: HTMLInputElement` - поле ввода адреса.
 
 Методы класса:
+`set payment(value: "online" | "cash" | "")` - устанавливает способ оплаты;
 `set address(value: string)` - устанавливает адрес доставки.
 
 #### Класс EmailPhoneForm(наследует Form)
@@ -544,6 +548,11 @@ interface EmailPhoneFormData {
 
 ## Презентер
 
-Так как у приложения только одна страница, достаточно одного презентера, который будет отвечать за логику работы этой страницы. Выносить код «Презентера» в отдельный класс необязательно.
+Так как у приложения только одна страница, достаточно одного презентера, который будет отвечать за логику работы этой страницы. Выносить код «Презентера» в отдельный класс необязательно. Логика следующая, пример:
 
-
+1. Пользователь нажимает на кнопку выбора продукта из каталога.
+2. Презентер слушает событие `product:select`, вызывает метод Модели `setSelectedProduct()`, чтобы она внесла в свои данные выбор пользователя.
+3. Метод Модели `setSelectedProduct()` вызывает событие `catalog:setSelectedProduct`. Презентер слушает его. Вызывает в Представлении отрисовку модального окна с выбранным товаром.
+4. Пользователь нажимает на кнопку добавления(удаления) товара в корзину(из корзины).
+5. Презентер слушает событие `product:choose` в зависимости от ситуации вызывает или `deleteProductsToBuy()`, или `addProductsToBuy()`. Предположим, что товара в корзине нет, тогда вызывается метод Модели `addProductsToBuy()`.
+6. Метод Модели `addProductsToBuy()` эмитит событие `basket:addProduct`. Презентер слушает его, передает инструкции Представлению: необходимо отрисовать этот товар в корзине, отрисовать его порядковый номер, отрисовать итоговую стоимость товаров(т.к. произошло изменение данных), отрисовать счетчик в шапке страницы.

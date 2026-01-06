@@ -8,7 +8,7 @@ interface ProductPreviewData {
     category: string;
     description: string;
     image: string;
-    buttonText: string;
+    buttonText: "Удалить из корзины" | "Купить" | "Недоступно";
 }
 
 export class ProductPreview extends ProductCard<ProductPreviewData> {
@@ -36,8 +36,7 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
             this.container
         );
         this.cardButton.addEventListener("click", () => {
-            this.events.emit("product:choose", this);
-            this.events.emit("product:select", this);
+            this.events.emit("product:choose");
         });
     }
 
@@ -60,7 +59,7 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
         this.descriptionElement.textContent = value;
     }
 
-    set buttonText(value: string) {
+    set buttonText(value: "Удалить из корзины" | "Купить" | "Недоступно") {
         this.cardButton.textContent = value;
     }
 
