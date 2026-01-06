@@ -328,7 +328,7 @@ interface OrderSuccessData {
 ```
 interface ProductCardData {
   title: string;
-  price: string;
+  price: number | null;
 }
 ```
 
@@ -341,7 +341,7 @@ interface ProductCardData {
 
 Методы класса:
 `set title(value: string)` - устанавливает название товара в карточке;
-`set price(value: string)` - устанавливает стоимость товара в карточке.
+`set price(value: number | null)` - устанавливает стоимость товара в карточке.
 
 #### Класс ProductInGallery(наследует ProductCard)
 
@@ -357,7 +357,7 @@ interface ProductInGalleryData {
 ```
 
 Конструктор:
-`constructor(container: HTMLElement, protected events: IEvents) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, actions?: ICardActions) {this.categoryElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.imageElement = ensureElement<HTMLImageElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `categoryElement: HTMLElement` - категория товара;
@@ -378,7 +378,7 @@ interface ProductPreviewData {
   category: string;
   description: string;
   image: string;
-  buttonText: "Удалить из корзины" | "Купить" | "Недоступно";
+  buttonText: string;
 }
 ```
 
@@ -395,8 +395,8 @@ interface ProductPreviewData {
 `set category(value: string)` - устанавливает категорию товара в карточке;
 `set description(value: string)` - устанавливает описание товара в карточке;
 `set image(value: string)` - устанавливает изображение товара в карточке;
-`set buttonText(value: "Удалить из корзины" | "Купить" | "Недоступно")` - устанавливает текст кнопки в карточке товара;
-`buttonProhibited()` - делает кнопку запрещенной для нажатия.
+`set buttonText(value: string)` - устанавливает текст кнопки в карточке товара;
+`buttonProhibited(value: boolean)` - делает кнопку разрешенной(запрещенной) для нажатия, если товар доступен(не доступен) к покупке.
 
 #### Класс ProductInBasket(наследует ProductCard)
 
@@ -411,7 +411,7 @@ interface ProductInBasketData {
 ```
 
 Конструктор:
-`constructor(container: HTMLElement, protected events: IEvents) {this.productIndexElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.deleteButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
+`constructor(container: HTMLElement, actions?: ICardActions) {this.productIndexElement = ensureElement<HTMLElement>('класс элемента', контейнер); this.deleteButton = ensureElement<HTMLButtonElement>('класс элемента', контейнер);}`
 
 Поля класса:
 `productIndexElement: HTMLElement` - порядковый номер товара в корзине;
@@ -443,7 +443,8 @@ interface BasketModalData {
 
 Методы класса:
 `set item(items: HTMLElement[])` - обновляет список товаров в корзине;
-`set totalPrice(value: number)` - обновляет общую сумму заказа.
+`set totalPrice(value: number)` - обновляет общую сумму заказа;
+`isregisterButtonAllowed(value: boolean)` - делает кнопку разрешенной(запрещенной) для нажатия после того, как товары для покупки выбраны и добавлены в корзину(товаров не в корзине, корзина пуста).
 
 #### Родительский класс Form
 
@@ -525,6 +526,7 @@ interface EmailPhoneFormData {
 `product:select` - уведомление: пользователь нажал на карточку товара в каталоге;
 `product:choose` - уведомление: пользователь нажал на кнопку добавления в корзину товара;
 `product:delete` - уведомление: пользователь нажал на кнопку удаления товара из корзины;
+`busket:submit` - уведомление: пользователь нажал на кнопку "Оформить" заказ;
 `order:submit` - уведомление: пользователь нажал на кнопку продолжения оформления заказа;
 `contacts:submit` - уведомление: пользователь нажал на кнопку "Оплатить";
 `payment:online` - уведомление: пользователь нажал на кнопку оплаты онлайн;
@@ -537,8 +539,7 @@ interface EmailPhoneFormData {
 
 `catalog:setProducts` - уведомление: необходимо установить список товаров в каталоге;
 `catalog:setSelectedProduct` - уведомление: необходимо установить выбранный пользователем товар;
-`basket:addProduct` - уведомление: необходимо добавить товар в корзину;
-`basket:deleteProduct` - уведомление: необходимо удалить товар из корзины;
+`basket:change` - уведомление: необходимо изменить корзину;
 `basket:clear` - уведомление: необходимо очистить содержимое корзины;
 `buyer:changePayment` - уведомление: необходимо изменить способ оплаты;
 `buyer:changeEmail` - уведомление: необходимо изменить email;
@@ -555,4 +556,4 @@ interface EmailPhoneFormData {
 3. Метод Модели `setSelectedProduct()` вызывает событие `catalog:setSelectedProduct`. Презентер слушает его. Вызывает в Представлении отрисовку модального окна с выбранным товаром.
 4. Пользователь нажимает на кнопку добавления(удаления) товара в корзину(из корзины).
 5. Презентер слушает событие `product:choose` в зависимости от ситуации вызывает или `deleteProductsToBuy()`, или `addProductsToBuy()`. Предположим, что товара в корзине нет, тогда вызывается метод Модели `addProductsToBuy()`.
-6. Метод Модели `addProductsToBuy()` эмитит событие `basket:addProduct`. Презентер слушает его, передает инструкции Представлению: необходимо отрисовать этот товар в корзине, отрисовать его порядковый номер, отрисовать итоговую стоимость товаров(т.к. произошло изменение данных), отрисовать счетчик в шапке страницы.
+6. Метод Модели `addProductsToBuy()` эмитит событие `basket:change`. Презентер слушает его, передает инструкции Представлению: необходимо отрисовать этот товар в корзине, отрисовать его порядковый номер, отрисовать итоговую стоимость товаров(т.к. произошло изменение данных), отрисовать счетчик в шапке страницы.

@@ -31,8 +31,7 @@ export class ModalWindow extends Component<ModalData> {
     }
 
     set content(item: HTMLElement) {
-        this.modalContainer.replaceChildren();
-        this.modalContainer.appendChild(item);
+        this.modalContainer.replaceChildren(item);
         this.open();
     }
 

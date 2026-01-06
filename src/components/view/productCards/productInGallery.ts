@@ -1,8 +1,8 @@
 import { ensureElement } from "../../../utils/utils";
-import { IEvents } from "../../base/Events";
 import { ProductCard } from "./productCard";
 import { categoryMap } from "../../../utils/constants";
 import { CDN_URL } from "../../../utils/constants";
+import { ICardActions } from "../../../types";
 
 interface ProductInGalleryData {
     category: string;
@@ -13,7 +13,7 @@ export class ProductInGallery extends ProductCard<ProductInGalleryData> {
     protected categoryElement: HTMLElement;
     protected imageElement: HTMLImageElement;
 
-    constructor(container: HTMLElement, protected events: IEvents) {
+    constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
         this.categoryElement = ensureElement<HTMLElement>(
             ".card__category",
@@ -23,9 +23,9 @@ export class ProductInGallery extends ProductCard<ProductInGalleryData> {
             ".card__image",
             this.container
         );
-        this.container.addEventListener("click", () => {
-            this.events.emit("product:select", this);
-        });
+        if (actions?.onClick) {
+            this.container.addEventListener('click', actions.onClick);
+        }
     }
 
     set category(value: string) {

@@ -43,16 +43,8 @@ export class PaymentAddressForm extends Form<PaymentAddressFormData> {
     }
 
     set payment(value: "online" | "cash" | "") {
-        if (value === "online") {
-            this.paymentCashButton.classList.remove("button_alt-active");
-            this.paymentOnlineButton.classList.add("button_alt-active");
-        } else if (value === "cash") {
-            this.paymentOnlineButton.classList.remove("button_alt-active");
-            this.paymentCashButton.classList.add("button_alt-active");
-        } else if (value === "") {
-            this.paymentCashButton.classList.remove("button_alt-active");
-            this.paymentOnlineButton.classList.remove("button_alt-active");
-        }
+        this.paymentCashButton.classList.toggle("button_alt-active", value === "cash"); 
+        this.paymentOnlineButton.classList.toggle("button_alt-active", value === "online");
     }
 
     set address(value: string) {

@@ -32,11 +32,14 @@ export class BasketModal extends Component<BasketModalData> {
     }
 
     set item(items: HTMLElement[]) {
-        this.listElement.replaceChildren();
         this.listElement.replaceChildren(...items);
     }
 
     set totalPrice(value: number) {
         this.totalPriceElement.textContent = `${value} синапсов`;
+    }
+    
+    isregisterButtonAllowed(value: boolean) {
+        this.registerButton.disabled = value;
     }
 }

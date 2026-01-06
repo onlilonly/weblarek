@@ -17,7 +17,7 @@ import { EmailPhoneForm } from "./components/view/form/emailPhoneForm.ts";
 import { PaymentAddressForm } from "./components/view/form/paymentAddressForm.ts";
 import { EventEmitter } from "./components/base/Events.ts";
 import { ensureElement, cloneTemplate } from "./utils/utils.ts";
-import { IProduct, IOrderRequest } from "./types/index.ts";
+import { IProduct, IOrderRequest, IOrderResponse } from "./types/index.ts";
 
 const events = new EventEmitter();
 
@@ -45,85 +45,60 @@ const orderSuccessModel = new OrderSuccess(
     cloneTemplate<HTMLElement>("#success"),
     events
 );
+const previewCard = new ProductPreview(
+        cloneTemplate<HTMLElement>("#card-preview"),
+        events
+    );
 
 events.on("catalog:setProducts", () => {
     const products = productsModel.getProducts();
 
     const cards = products.map((product) => {
-        const element = cloneTemplate<HTMLTemplateElement>("#card-catalog");
-        const card = new ProductInGallery(element, events);
-        Object.assign(card as object, product);
-        return card.render();
+        const card = new ProductInGallery(cloneTemplate<HTMLTemplateElement>("#card-catalog"), {
+            onClick: () => events.emit("product:select", product)
+        });
+        return card.render(product);
     });
     galleryModel.gallery = cards;
 });
 
 events.on("basket:open", () => {
+    if (productsToBuyModel.getQuantityProductsToBuy() === 0) {
+        basketModalModel.isregisterButtonAllowed(true);
+    } else {
+        basketModalModel.isregisterButtonAllowed(false);
+    }
     modalWindowModel.content = basketModalModel.render();
 });
 
 events.on("product:select", (product: IProduct) => {
     productsModel.setSelectedProduct(product);
-    console.log(productsModel.getSelectedProduct());
 });
 
 events.on("catalog:setSelectedProduct", () => {
-    const product = productsModel.getSelectedProduct();
-    if (!product) return;
-    const productSelected = productsModel.getProductById(product.id);
+    const productSelected = productsModel.getSelectedProduct();
     if (!productSelected) return;
-    const previewCard = new ProductPreview(
-        cloneTemplate<HTMLElement>("#card-preview"),
-        events
-    );
     const isInBusket = productsToBuyModel.isProductInBasket(productSelected.id);
     previewCard.buttonText = isInBusket ? "Удалить из корзины" : "Купить";
     if (productSelected.price === null) {
         previewCard.buttonText = "Недоступно";
-        previewCard.buttonProhibited();
+        previewCard.buttonProhibited(true);
+    } else {
+        previewCard.buttonProhibited(false);
     }
-    Object.assign(previewCard as object, productSelected);
-    modalWindowModel.content = previewCard.render();
+    modalWindowModel.content = previewCard.render(productSelected);
 });
 
 events.on("product:choose", () => {
-    const product = productsModel.getSelectedProduct();
-    if (!product) return;
-    const productToBuy = productsModel.getProductById(product.id);
+    const productToBuy = productsModel.getSelectedProduct();
     if (!productToBuy) return;
-    const previewCard = new ProductPreview(
-        cloneTemplate<HTMLElement>("#card-preview"),
-        events
-    );
-    const isInBusket = productsToBuyModel.isProductInBasket(product.id);
+    const isInBusket = productsToBuyModel.isProductInBasket(productToBuy.id);
     if (isInBusket) {
         productsToBuyModel.deleteProductsToBuy(productToBuy);
     } else {
         productsToBuyModel.addProductsToBuy(productToBuy);
     }
-    previewCard.buttonText = isInBusket ? "Купить" : "Удалить из корзины";
-    Object.assign(previewCard as object, productToBuy);
-    modalWindowModel.content = previewCard.render();
-});
-
-events.on("basket:addProduct", () => {
-    const products = productsToBuyModel.getProductsToBuy();
-    let basketCounter = 0;
-    let arrProducts: HTMLElement[] = [];
-
-    products.forEach((product) => {
-        const productToBuy = productsModel.getProductById(product.id);
-        const element = cloneTemplate<HTMLElement>("#card-basket");
-        const basketCard = new ProductInBasket(element, events);
-        Object.assign(basketCard as object, productToBuy);
-        basketCounter++;
-        basketCard.index = basketCounter;
-        arrProducts.push(basketCard.render());
-    });
-
-    headerModel.counter = basketCounter;
-    basketModalModel.totalPrice = productsToBuyModel.getCostProductsToBuy();
-    basketModalModel.item = arrProducts;
+    modalWindowModel.close();
 });
 
 events.on("product:delete", (product: IProduct) => {
@@ -132,23 +107,25 @@ events.on("product:delete", (product: IProduct) => {
     productsToBuyModel.deleteProductsToBuy(productToDelete);
 });
 
-events.on("basket:deleteProduct", () => {
+events.on("basket:change", () => {
     const products = productsToBuyModel.getProductsToBuy();
     let basketCounter = 0;
-    let arrProducts: HTMLElement[] = [];
 
-    products.forEach((product) => {
-        const productToDelete = productsModel.getProductById(product.id);
-        const element = cloneTemplate<HTMLElement>("#card-basket");
-        const basketCard = new ProductInBasket(element, events);
-        Object.assign(basketCard as object, productToDelete);
+    const arrProducts = products.map((product) => {
+        const productToBuy = productsModel.getProductById(product.id);
+        const basketCard = new ProductInBasket(cloneTemplate<HTMLElement>("#card-basket"),  {
+            onClick: () => events.emit("product:delete", product)
+        });
         basketCounter++;
         basketCard.index = basketCounter;
-        arrProducts.push(basketCard.render());
+        return basketCard.render(productToBuy);
     });
-    basketModalModel.item = arrProducts;
+    if (productsToBuyModel.getQuantityProductsToBuy() === 0) {
+        basketModalModel.isregisterButtonAllowed(true);
+    }
     headerModel.counter = basketCounter;
     basketModalModel.totalPrice = productsToBuyModel.getCostProductsToBuy();
+    basketModalModel.item = arrProducts;
 });
 
 events.on("busket:submit", () => {
@@ -168,14 +145,18 @@ events.on("buyer:changePayment", () => {
     paymentAddressFormModel.payment = paymentWay.payment;
     const errors = buyerInfoModel.validateBuyerInfo();
     let validate: string = "";
-    if (errors.payment) {
-        validate = `${errors.payment}`;
+    if (errors.payment && errors.address) {
+        validate = `${errors.address}; ${errors.payment}`;
     } else if (errors.address) {
         validate = `${errors.address}`;
+    } else if (errors.payment){
+        validate = `${errors.payment}`;
     }
     paymentAddressFormModel.errors = validate;
     if (!errors.payment && !errors.address) {
         paymentAddressFormModel.isallowedButton(false);
+    } else {
+        paymentAddressFormModel.isallowedButton(true);
     }
 });
 
@@ -188,14 +169,18 @@ events.on("buyer:changeAddress", () => {
     paymentAddressFormModel.address = address;
     const errors = buyerInfoModel.validateBuyerInfo();
     let validate: string = "";
-    if (errors.payment) {
-        validate = `${errors.payment}`;
+    if (errors.payment && errors.address) {
+        validate = `${errors.address}; ${errors.payment}`;
     } else if (errors.address) {
         validate = `${errors.address}`;
+    } else if (errors.payment){
+        validate = `${errors.payment}`;
     }
     paymentAddressFormModel.errors = validate;
     if (!errors.payment && !errors.address) {
         paymentAddressFormModel.isallowedButton(false);
+    } else {
+        paymentAddressFormModel.isallowedButton(true);
     }
 });
 
@@ -212,14 +197,18 @@ events.on("buyer:changeEmail", () => {
     emailPhoneFormModel.email = email;
     const errors = buyerInfoModel.validateBuyerInfo();
     let validate: string = "";
-    if (errors.email) {
-        validate = `${errors.email}`;
+    if (errors.phone && errors.email) {
+        validate = `${errors.email}; ${errors.phone}`;
     } else if (errors.phone) {
         validate = `${errors.phone}`;
+    } else if (errors.email){
+        validate = `${errors.email}`;
     }
     emailPhoneFormModel.errors = validate;
     if (!errors.phone && !errors.email) {
         emailPhoneFormModel.isallowedButton(false);
+    } else {
+        emailPhoneFormModel.isallowedButton(true);
     }
 });
 
@@ -232,21 +221,24 @@ events.on("buyer:changePhone", () => {
     emailPhoneFormModel.email = phone;
     const errors = buyerInfoModel.validateBuyerInfo();
     let validate: string = "";
-    if (errors.email) {
-        validate = `${errors.email}`;
+    if (errors.phone && errors.email) {
+        validate = `${errors.email}; ${errors.phone}`;
     } else if (errors.phone) {
         validate = `${errors.phone}`;
+    } else if (errors.email){
+        validate = `${errors.email}`;
     }
     emailPhoneFormModel.errors = validate;
     if (!errors.phone && !errors.email) {
         emailPhoneFormModel.isallowedButton(false);
+    } else {
+        emailPhoneFormModel.isallowedButton(true);
     }
 });
 
-events.on("contacts:submit", () => {
+events.on("contacts:submit", async () => {
     const buyerInfo = buyerInfoModel.getBuyerInfo();
     const sum = productsToBuyModel.getCostProductsToBuy();
-    orderSuccessModel.totalSum = sum;
     const products = productsToBuyModel.getProductsToBuy();
     const ids = products.map((elem) => elem.id);
     const orderRequest: IOrderRequest = {
@@ -257,12 +249,20 @@ events.on("contacts:submit", () => {
         total: sum,
         items: ids,
     };
-    console.log(orderRequest);
-    apiModel.postOrder(orderRequest);
+    try {
+        const response = await apiModel.postOrder(orderRequest);
+        events.emit("api:successPost", response)
+    } catch (error) {
+        throw error
+    }  
+});
+
+events.on("api:successPost", (response: IOrderResponse) => {
     productsToBuyModel.clearBusket();
     buyerInfoModel.deleteBuyerInfo();
+    orderSuccessModel.totalSum = response.total;
     modalWindowModel.content = orderSuccessModel.render();
-});
+})
 
 events.on("basket:clear", () => {
     const productsInBasket: HTMLElement[] = [];
@@ -271,6 +271,7 @@ events.on("basket:clear", () => {
     headerModel.counter = basketCounter;
     basketModalModel.totalPrice = productsToBuyModel.getCostProductsToBuy();
     basketModalModel.item = productsInBasket;
+    basketModalModel.isregisterButtonAllowed(true);
 });
 
 events.on("buyer:clear", () => {
@@ -290,5 +291,9 @@ events.on("modal:close", () => {
     modalWindowModel.close();
 });
 
-const response = await apiModel.getItems();
-productsModel.setProducts(response.items);
+async function fetchCatalog() {
+    const response = await apiModel.getItems();
+    productsModel.setProducts(response.items)
+}
+
+fetchCatalog().catch(console.error);

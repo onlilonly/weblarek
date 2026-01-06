@@ -8,7 +8,7 @@ interface ProductPreviewData {
     category: string;
     description: string;
     image: string;
-    buttonText: "Удалить из корзины" | "Купить" | "Недоступно";
+    buttonText: string;
 }
 
 export class ProductPreview extends ProductCard<ProductPreviewData> {
@@ -59,11 +59,11 @@ export class ProductPreview extends ProductCard<ProductPreviewData> {
         this.descriptionElement.textContent = value;
     }
 
-    set buttonText(value: "Удалить из корзины" | "Купить" | "Недоступно") {
+    set buttonText(value: string) {
         this.cardButton.textContent = value;
     }
 
-    buttonProhibited() {
-        this.cardButton.disabled = true;
+    buttonProhibited(value: boolean) {
+        this.cardButton.disabled = value;
     }
 }

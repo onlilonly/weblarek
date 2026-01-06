@@ -1,6 +1,6 @@
 import { ensureElement } from "../../../utils/utils";
-import { IEvents } from "../../base/Events";
 import { ProductCard } from "./productCard";
+import { ICardActions } from "../../../types";
 
 interface ProductInBasketData {
     index: number;
@@ -10,7 +10,7 @@ export class ProductInBasket extends ProductCard<ProductInBasketData> {
     protected productIndexElement: HTMLElement;
     protected deleteButton: HTMLButtonElement;
 
-    constructor(container: HTMLElement, protected events: IEvents) {
+    constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
         this.productIndexElement = ensureElement<HTMLElement>(
             ".basket__item-index",
@@ -20,9 +20,9 @@ export class ProductInBasket extends ProductCard<ProductInBasketData> {
             ".basket__item-delete",
             this.container
         );
-        this.deleteButton.addEventListener("click", () => {
-            this.events.emit("product:delete", this);
-        });
+        if (actions?.onClick) {
+            this.deleteButton.addEventListener('click', actions.onClick);
+        }
     }
 
     set index(value: number) {

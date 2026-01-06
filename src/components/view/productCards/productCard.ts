@@ -3,7 +3,7 @@ import { ensureElement } from "../../../utils/utils";
 
 interface ProductCardData {
     title: string;
-    price: string;
+    price: number | null;
 }
 
 export abstract class ProductCard<T> extends Component<T & ProductCardData> {
@@ -26,7 +26,7 @@ export abstract class ProductCard<T> extends Component<T & ProductCardData> {
         this.titleElement.textContent = value;
     }
 
-    set price(value: string) {
+    set price(value: number | null) {
         this.priceElement.textContent = `${value} синапсов`;
         if (value === null) {
             this.priceElement.textContent = "Бесценно";

@@ -18,7 +18,7 @@ export class Basket {
         const isItemInBasket = this.isProductInBasket(product.id);
         if (!isItemInBasket) {
             this.productsToBuy.push(product);
-            this.events.emit("basket:addProduct");
+            this.events.emit("basket:change");
         }
     }
 
@@ -26,7 +26,7 @@ export class Basket {
         this.productsToBuy = this.productsToBuy.filter(
             (item) => item !== product
         );
-        this.events.emit("basket:deleteProduct");
+        this.events.emit("basket:change");
     }
 
     clearBusket(): void {
