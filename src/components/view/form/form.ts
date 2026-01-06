@@ -25,8 +25,8 @@ export abstract class Form<T> extends Component<T & FormData> {
         });
     }
 
-    allowedButton() {
-        this.submitButton.disabled = false;
+    isallowedButton(value: boolean) {
+        this.submitButton.disabled = value;
     }
 
     set errors(item: string) {

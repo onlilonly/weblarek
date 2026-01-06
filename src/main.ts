@@ -175,7 +175,7 @@ events.on("buyer:changePayment", () => {
     }
     paymentAddressFormModel.errors = validate;
     if (!errors.payment && !errors.address) {
-        paymentAddressFormModel.allowedButton();
+        paymentAddressFormModel.isallowedButton(false);
     }
 });
 
@@ -195,7 +195,7 @@ events.on("buyer:changeAddress", () => {
     }
     paymentAddressFormModel.errors = validate;
     if (!errors.payment && !errors.address) {
-        paymentAddressFormModel.allowedButton();
+        paymentAddressFormModel.isallowedButton(false);
     }
 });
 
@@ -219,7 +219,7 @@ events.on("buyer:changeEmail", () => {
     }
     emailPhoneFormModel.errors = validate;
     if (!errors.phone && !errors.email) {
-        emailPhoneFormModel.allowedButton();
+        emailPhoneFormModel.isallowedButton(false);
     }
 });
 
@@ -239,7 +239,7 @@ events.on("buyer:changePhone", () => {
     }
     emailPhoneFormModel.errors = validate;
     if (!errors.phone && !errors.email) {
-        emailPhoneFormModel.allowedButton();
+        emailPhoneFormModel.isallowedButton(false);
     }
 });
 
@@ -276,8 +276,10 @@ events.on("basket:clear", () => {
 events.on("buyer:clear", () => {
     paymentAddressFormModel.payment = "";
     paymentAddressFormModel.address = "";
+    paymentAddressFormModel.isallowedButton(true);
     emailPhoneFormModel.email = "";
     emailPhoneFormModel.phone = "";
+    emailPhoneFormModel.isallowedButton(true);
 });
 
 events.on("orderSucces:close", () => {
